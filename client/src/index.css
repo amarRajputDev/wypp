@@ -6,6 +6,23 @@
 
 }
 
+html {
+  overflow: -moz-scrollbars-none; /* Firefox */
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+}
+
+html::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ff7e5f, #feb47b); /* Gradient color for the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+}
 
 .rubik{
   font-family: "Rubik Puddles";
@@ -21,3 +38,5 @@
   font-variation-settings:
     "wdth" 100;
 }
+
+

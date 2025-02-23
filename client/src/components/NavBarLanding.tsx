@@ -2,7 +2,7 @@
 import { motion } from "motion/react";
 import logo from "../assets/boy-8515623_1920.png";
 // import { useEffect } from "react"
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useAnimationStore from "../store/aniStore";
 
@@ -12,6 +12,8 @@ function NavBarLanding() {
   const [isOpen, setisOpen] = useState(false)
   
   // const [xVal, setxVal] = useState<null | number>(value)
+
+  const navigate = useNavigate()
   
  useEffect(() => {
   switch (location.pathname) {
@@ -24,6 +26,9 @@ function NavBarLanding() {
     case "/contact":
       setValue(195)
       break;
+    
+    default:
+      setValue(0)
   }
 
   
@@ -31,6 +36,9 @@ function NavBarLanding() {
  
 
   return (
+
+    <>
+    
     <div className=" h-[70px]  fixed  w-screen z-50 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-20   ">
       <div className=" flex w-full h-full lg:px-[100px] px-7 justify-between items-center">
         {/* logo */}
@@ -44,13 +52,15 @@ function NavBarLanding() {
         {/* links  */}
         <div className=" md:block relative hidden    ">
 
+
+          {/* Animation span  */}
           <motion.span
           initial={{x:value}}
             animate={{ x:value }}
-            className="absolute h-[2px] bg-gradient-to-r from-teal-500 via-purple-500 to-red-500 w-[25%] bottom-0 left"></motion.span>
+            className={`absolute h-[2px] bg-gradient-to-r from-teal-500 via-purple-500 to-red-500 w-[25%] ${value==0?"hidden" : ""} bottom-0 left`}></motion.span>
           
           <ul className="flex gap-9 px-3  ">
-            <motion.li className=" font-bold relative cursor-pointer h-[30px] overflow-hidden text-xl roboto-regular">
+            <motion.li className=" relative cursor-pointer h-[30px] overflow-hidden text-xl roboto-regular">
             <Link to={"/"}>
               <motion.div
                 whileHover={{ y: -30 }}
@@ -65,7 +75,7 @@ function NavBarLanding() {
             </motion.li>
 
 
-            <motion.li className=" font-bold cursor-pointer relative h-[30px] overflow-hidden text-xl roboto-regular">
+            <motion.li className="  cursor-pointer relative h-[30px] overflow-hidden text-xl roboto-regular">
               <Link to={"/about"}>
 
               <motion.div whileHover={{ y: -30 }}
@@ -74,7 +84,7 @@ function NavBarLanding() {
               }`}
               >
                 About <br /> About{" "}
-                {/* <span className={` absolute bottom-0 ${location.pathname == "/about" ? "" : "hidden"} left-0  h-[2px] bg-gradient-to-r from-teal-500 via-purple-500 to-red-500 w-full`}></span> */}
+               
               </motion.div>
               
               </Link>
@@ -82,7 +92,7 @@ function NavBarLanding() {
             </motion.li>
 
 
-            <motion.li className=" font-bold cursor-pointer h-[30px] relative overflow-hidden text-xl roboto-regular">
+            <motion.li className="  cursor-pointer h-[30px] relative overflow-hidden text-xl roboto-regular">
               <Link to={"/contact"}>
               <motion.div whileHover={{ y: -30 }}
                className={`${
@@ -90,7 +100,7 @@ function NavBarLanding() {
               }`}
               >
                 Contact <br /> Contact{" "}
-          {/* <span className={` absolute bottom-0 ${location.pathname == "/contact" ? "" : "hidden"} left-0  h-[2px] bg-gradient-to-r from-teal-500 via-purple-500 to-red-500 w-full`}></span> */}
+          
 
               </motion.div>
               </Link>
@@ -100,8 +110,12 @@ function NavBarLanding() {
 
         {/* Login/Sighnup  */}
         <div className="md:flex hidden gap-5">
-          <button className="btn btn-outline btn-primary">Signup</button>
-          <button className="btn  btn-secondary">Login</button>
+          <button 
+           onClick={()=>navigate("/signup")}
+          className={`btn btn-outline btn-primary ${location.pathname == "/signup" ? "hidden" : ""}`}>Signup</button>
+          <button 
+           onClick={()=>navigate("/login")}
+          className={`btn  btn-secondary ${location.pathname == "/login" ? "hidden" : ""}`}>Login</button>
         </div>
 
         {/* For Mobile  */}
@@ -148,18 +162,37 @@ function NavBarLanding() {
             </div>
 
             <div  >
-                <button className=" btn btn-secondary ">
+                <button 
+                onClick={()=>navigate("/signup")}
+                className= {`btn btn-primary ${location.pathname=="/signup" ? "hidden" : ""}`} >
+               
                   Signup
+           
                 </button>
                 <br />
-                <button className="btn mt-3 btn-neutral  btn-outline">
+                <button 
+                onClick={()=>navigate("/login")}
+                className={`btn mt-3 btn-neutral  btn-outline ${location.pathname=="/signup" ? "hidden" : ""}`}>
                   Login
                 </button>
             </div>
         </motion.div>
 
+
+
+
+
+
+
+        
+
       </div>
+
+      
     </div>
+
+   
+    </>
   );
 }
 

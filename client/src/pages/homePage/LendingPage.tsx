@@ -37,19 +37,19 @@ function LendingPage() {
       {/* left  */}
       <div className=" text-[#2C3E50] roboto-regular lg:px-[100px] px-[20px]  lg:h-screen h-fit pb-32  lg:w-[49%] ">
         <div className=" md:mt-36 mt-28  ">
-        <h1 className=" md:text-6xl text-5xl font-bold roboto-regular ">College Life is Better with Friends!</h1>
+        <h1 className=" xl:text-6xl text-6xl font-bold roboto-regular ">College Life is Better with Friends!</h1>
         <p className=" mt-5 text-xl ">Make new friends, find your tribe, <br /> and enjoy student life!</p>
         </div>
 
         <button className="btn  md:mt-20 mt-10 btn-secondary btn-wide">Get Started</button>
 
-        <div className=" lg:mt-30 mt-20 md:w-[50%]">
+        <div className=" xl:mt-30 mt-20 xl:w-[50%] lg:w-full w-[70%]">
           <img src={service} alt="" />
         </div>
       </div>
 
       {/* right  */}
-      <div className=" lg:flex-[1] lg:h-[100vh]  hidden md:block   h-[80vh] mt-28 md:mt-0 items-center  ">
+      <div className=" lg:flex-[1] xl:h-[100vh]  hidden md:block    h-[80vh] mt-28 md:mt-0 items-center  ">
 
         <div className=" w-full flex flex-col md:flex-row h-[80%] gap-5 lg:mt-32 px-8">
 

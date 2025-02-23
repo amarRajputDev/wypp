@@ -1,0 +1,15 @@
+export interface user {
+    fullName: string,
+    username: string,
+    gender: string,
+    address: string,
+    age: number,
+    collegeName: string,
+    courseName: string,
+    courseDuration: number,
+    yearOfStudy: number,
+    personality: string,
+    interests: string[],
+    email: string,
+    profilePic: string,
+}
