@@ -33,13 +33,13 @@ const [Error, setError] = useState("")
 
 
   //TODO: handle Login
-  const handleLogin = (e: any) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
     const isValidate = validation();
     if (isValidate) {
       
       try {
-        axios.post(url+"/user/login" , Data , {withCredentials :true})
+        await axios.post(url+"/user/login" , Data , {withCredentials :true})
         .then((res)=>{
           console.log(res.data)
           toast.success(res.data.message)
@@ -51,8 +51,8 @@ const [Error, setError] = useState("")
           toast.error(err.response.data.message)
         })
         
-      } catch (error) {
-        console.log(error)
+      } catch (err: any) {
+        console.error("Login Error:", err);
       }
     }
 

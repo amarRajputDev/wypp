@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/boy-8515623_1920.png"
-
+import logo from "../../assets/boy-8515623_1920.png";
 
 interface FormData {
   // Personal Details
@@ -45,6 +44,8 @@ interface ValidationErrors {
 
 function Signup() {
   const [step, setStep] = useState<number>(1);
+  const [isFocusCollgeNage, setisFocusCollgeNage] = useState(false)
+  const [isFocusCourseName, setisFocusCourseName] = useState(false)
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
@@ -62,9 +63,52 @@ function Signup() {
     password: "",
     confirmPassword: "",
   });
+  const [collegesData, setcollegesData] = useState<any[]>([])
+  const [CoursesData, setCoursesData] = useState<any[]>([])
 
-  const navigation = useNavigate()
+  const apiUrl = import.meta.env.VITE_API_URL;
 
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    if (formData.collegeName === "") {
+      return
+    }
+
+    const collegesName = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/colleges/searchCollegeName?search=${formData.collegeName}`);
+        // console.log(response);
+        setcollegesData(response.data)
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    };
+
+    collegesName();
+   
+  }, [formData.collegeName])
+
+
+
+  useEffect(() => {
+    if (formData.collegeName === "") {
+      return
+    }
+    const courses = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/colleges/searchCourseName?search=${formData.courseName}`);
+        // console.log(response);
+        setCoursesData(response.data)
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    };
+
+    courses();
+   
+  }, [formData.courseName])
+  
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -80,7 +124,7 @@ function Signup() {
 
   const validateStep1 = (): boolean => {
     const newErrors: ValidationErrors = {};
-    
+
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required";
     } else if (formData.fullName.length < 3) {
@@ -159,7 +203,8 @@ function Signup() {
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     } else if (!/(?=.*[A-Z])(?=.*[0-9])/.test(formData.password)) {
-      newErrors.password = "Password must contain at least one uppercase letter and one number";
+      newErrors.password =
+        "Password must contain at least one uppercase letter and one number";
     }
 
     if (!formData.confirmPassword) {
@@ -174,7 +219,7 @@ function Signup() {
 
   const handleNext = () => {
     let isValid = false;
-    
+
     switch (step) {
       case 1:
         isValid = validateStep1();
@@ -193,36 +238,37 @@ function Signup() {
     setStep((prev) => prev - 1);
   };
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateStep3()) {
-      // Handle form submission here
-      try {
-         await axios.post("http://localhost:8080/api/user/signup", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true, // Ensures cookies (JWT token) are stored in the browser
-        }).then((res)=>{
-          console.log(res)
-        
-          if (res.status == 201) {
-            
-            navigation("/home")
-          }else{
-            toast.error(res.data.message)
-          }
-        })
-        .catch((err)=> console.log(err))
     
-        // console.log("Signup successful:", response.data);
-        // return response.data; // Handle success response
-      } catch (error:any) {
-        console.error("Signup error:", error.response ? error.response.data : error.message);
-        return null; // Handle error
+    if (validateStep3()) {
+      try {
+        const res = await axios.post(
+          "http://localhost:8080/api/user/signup",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // Ensures JWT cookies are stored
+          }
+        );
+  
+        console.log("Signup Response:", res);
+  
+        if (res.status === 201) {
+          toast.success(res.data.message || "Signup successful!");
+          navigation("/home");
+        } else {
+          toast.error(res.data.message || "Signup failed!");
+        }
+      } catch (error: any) {
+        console.error("Signup error:", error.response?.data || error.message);
+        toast.error(error.response?.data?.message || "Signup failed. Please try again.");
       }
     }
   };
+  
 
   const renderStepContent = () => {
     return (
@@ -245,10 +291,12 @@ function Signup() {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.fullName ? 'input-error' : ''}`}
+                className={`input input-bordered w-full ${
+                  errors.fullName ? "input-error" : ""
+                }`}
                 required
               />
-              {renderError('fullName')}
+              {renderError("fullName")}
             </div>
 
             <div className="form-control w-full">
@@ -260,10 +308,12 @@ function Signup() {
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.username ? 'input-error' : ''}`}
+                className={`input input-bordered w-full ${
+                  errors.username ? "input-error" : ""
+                }`}
                 required
               />
-              {renderError('username')}
+              {renderError("username")}
             </div>
 
             <div className="form-control w-full">
@@ -311,7 +361,7 @@ function Signup() {
                   </label>
                 </div>
               </div>
-              {renderError('gender')}
+              {renderError("gender")}
             </div>
 
             <div className="form-control w-full">
@@ -323,10 +373,12 @@ function Signup() {
                 name="age"
                 value={formData.age}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.age ? 'input-error' : ''}`}
+                className={`input input-bordered w-full ${
+                  errors.age ? "input-error" : ""
+                }`}
                 required
               />
-              {renderError('age')}
+              {renderError("age")}
             </div>
 
             <div className="form-control w-full">
@@ -338,13 +390,16 @@ function Signup() {
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.address ? 'input-error' : ''}`}
+                className={`input input-bordered w-full ${
+                  errors.address ? "input-error" : ""
+                }`}
                 required
               />
-              {renderError('address')}
+              {renderError("address")}
             </div>
-        <Link to={"/login"} className=" text-blue-500 text-[10px]">Already Have an Account?</Link>
-
+            <Link to={"/login"} className=" text-blue-500 text-[10px]">
+              Already Have an Account?
+            </Link>
 
             <button
               type="button"
@@ -357,7 +412,7 @@ function Signup() {
         )}
         {step === 2 && (
           <>
-            <div className="form-control w-full">
+            <div className="form-control relative w-full">
               <label className="label">
                 <span className="label-text">College Name</span>
               </label>
@@ -366,10 +421,31 @@ function Signup() {
                 name="collegeName"
                 value={formData.collegeName}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.collegeName ? 'input-error' : ''}`}
+                onFocus={() => setisFocusCollgeNage(true)}
+                onBlur={() => setisFocusCollgeNage(false)}
+                className={`input input-bordered w-full ${
+                  errors.collegeName ? "input-error" : ""
+                }`}
                 required
               />
-              {renderError('collegeName')}
+              {renderError("collegeName")}
+                
+
+                {/* //DROPDOWN */}
+              <div className={`rounded-2xl absolute z-10 w-full bg-base-200 shadow-2xl border p-2 ${isFocusCollgeNage ? "" : "hidden"} ${collegesData.length === 0 ? " hidden" : "" }`} >
+
+              {
+                collegesData.map((college)=>(
+                  <div 
+                  className=" w-full p-2 hover:bg-base-100 rounded-xl cursor-pointer "
+                  onMouseDown={()=>setFormData({...formData , collegeName : college.name})}
+                  >
+                <h1>{college.name}</h1>
+              </div>
+
+                ))
+              }
+              </div>
             </div>
 
             <div className="form-control w-full">
@@ -381,10 +457,32 @@ function Signup() {
                 name="courseName"
                 value={formData.courseName}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.courseName ? 'input-error' : ''}`}
+                onFocus={() => setisFocusCourseName(true)}
+                onBlur={() => setisFocusCourseName(false)}
+                className={`input input-bordered w-full ${
+                  errors.courseName ? "input-error" : ""
+                }`}
                 required
               />
-              {renderError('courseName')}
+              {renderError("courseName")}
+
+              {/* //DROPDOWN */}
+              <div className={`rounded-2xl absolute z-10 w-full bg-base-200 shadow-2xl border p-2 ${isFocusCourseName ? "" : "hidden"} ${CoursesData.length === 0 ? " hidden" : "" }`} >
+
+              {
+                CoursesData.map((course)=>(
+                  <div 
+                  key={course.id}
+                  className=" w-full p-2 hover:bg-base-100 rounded-xl cursor-pointer "
+                  onMouseDown={()=>{setFormData({...formData , courseName : course.name})
+                }}
+                  >
+                <h1>{course.name}</h1>
+              </div>
+
+                ))
+              }
+              </div>
             </div>
 
             <div className="form-control w-full">
@@ -395,16 +493,18 @@ function Signup() {
                 name="courseDuration"
                 value={formData.courseDuration}
                 onChange={handleInputChange}
-                className={`select select-bordered w-full ${errors.courseDuration ? 'select-error' : ''}`}
+                className={`select select-bordered w-full ${
+                  errors.courseDuration ? "select-error" : ""
+                }`}
                 required
               >
-                <option value="">Select Duration</option>
+                <option disabled selected value="">Select Duration</option>
                 <option value="2">2 Years</option>
                 <option value="3">3 Years</option>
                 <option value="4">4 Years</option>
                 <option value="5">5 Years</option>
               </select>
-              {renderError('courseDuration')}
+              {renderError("courseDuration")}
             </div>
 
             <div className="form-control w-full">
@@ -415,17 +515,19 @@ function Signup() {
                 name="yearOfStudy"
                 value={formData.yearOfStudy}
                 onChange={handleInputChange}
-                className={`select select-bordered w-full ${errors.yearOfStudy ? 'select-error' : ''}`}
+                className={`select select-bordered w-full ${
+                  errors.yearOfStudy ? "select-error" : ""
+                }`}
                 required
               >
-                <option value="">Select Year</option>
+                <option disabled selected value="">Select Year</option>
                 <option value="1">1st Year</option>
                 <option value="2">2nd Year</option>
                 <option value="3">3rd Year</option>
                 <option value="4">4th Year</option>
                 <option value="5">5th Year</option>
               </select>
-              {renderError('yearOfStudy')}
+              {renderError("yearOfStudy")}
             </div>
 
             <div className="form-control w-full">
@@ -436,18 +538,30 @@ function Signup() {
                 name="personality"
                 value={formData.personality}
                 onChange={handleInputChange}
-                className={`select select-bordered w-full ${errors.personality ? 'select-error' : ''}`}
+                className={`select select-bordered w-full ${
+                  errors.personality ? "select-error" : ""
+                }`}
                 required
               >
-                <option disabled selected value="">Select Personality Type</option>
-                <option value="introvert">Introvert - I prefer smaller groups and quiet environments</option>
-                <option value="extrovert">Extrovert - I thrive in social situations and large groups</option>
-                <option value="ambivert">Ambivert - I'm balanced between social and quiet time</option>
+                <option disabled selected value="">
+                  Select Personality Type
+                </option>
+                <option value="introvert">
+                  Introvert - I prefer smaller groups and quiet environments
+                </option>
+                <option value="extrovert">
+                  Extrovert - I thrive in social situations and large groups
+                </option>
+                <option value="ambivert">
+                  Ambivert - I'm balanced between social and quiet time
+                </option>
               </select>
               <label className="label">
-                <span className="label-text-alt text-base-content/60">Choose the option that best describes you</span>
+                <span className="label-text-alt text-base-content/60">
+                  Choose the option that best describes you
+                </span>
               </label>
-              {renderError('personality')}
+              {renderError("personality")}
             </div>
 
             <div className="form-control w-full">
@@ -459,14 +573,17 @@ function Signup() {
                 rows={3}
                 value={formData.interests}
                 onChange={handleInputChange}
-                className={`textarea textarea-bordered w-full ${errors.interests ? 'textarea-error' : ''}`}
+                className={`textarea textarea-bordered w-full ${
+                  errors.interests ? "textarea-error" : ""
+                }`}
                 placeholder="What do you like to do?"
                 required
               />
-              {renderError('interests')}
+              {renderError("interests")}
             </div>
-        <Link to={"/login"} className=" text-blue-500 text-[10px]">Already Have an Account?</Link>
-
+            <Link to={"/login"} className=" text-blue-500 text-[10px]">
+              Already Have an Account?
+            </Link>
 
             <div className="flex gap-4">
               <button
@@ -497,11 +614,13 @@ function Signup() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
+                className={`input input-bordered w-full ${
+                  errors.email ? "input-error" : ""
+                }`}
                 placeholder="amar@mail.com"
                 required
               />
-              {renderError('email')}
+              {renderError("email")}
             </div>
 
             <div className="form-control w-full">
@@ -513,11 +632,13 @@ function Signup() {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.password ? 'input-error' : ''}`}
+                className={`input input-bordered w-full ${
+                  errors.password ? "input-error" : ""
+                }`}
                 placeholder="*********"
                 required
               />
-              {renderError('password')}
+              {renderError("password")}
             </div>
 
             <div className="form-control w-full">
@@ -529,14 +650,17 @@ function Signup() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className={`input input-bordered w-full ${errors.confirmPassword ? 'input-error' : ''}`}
+                className={`input input-bordered w-full ${
+                  errors.confirmPassword ? "input-error" : ""
+                }`}
                 placeholder="*********"
                 required
               />
-              {renderError('confirmPassword')}
-        <Link to={"/login"} className=" text-blue-500 text-[10px]">Already Have an Account?</Link>
+              {renderError("confirmPassword")}
+              <Link to={"/login"} className=" text-blue-500 text-[10px]">
+                Already Have an Account?
+              </Link>
             </div>
-
 
             <div className="flex gap-4">
               <button
@@ -561,33 +685,34 @@ function Signup() {
       <label className="label">
         <span className="label-text-alt text-error">{errors[fieldName]}</span>
       </label>
-    ) : null;
+    ) : null
   };
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-
       <ToastContainer />
       <div className="card w-full max-w-md bg-base-100 shadow-xl">
         <div className="card-body">
-    <img src={logo} alt="" className="h-[10vh] m-auto mt-3" />
+          <img src={logo} alt="" className="h-[10vh] m-auto mt-3" />
           <h2 className="card-title text-3xl font-bold text-center justify-center">
             Create your account
           </h2>
           <div className="text-center text-sm text-base-content/60">
-            Step {step} of 3
+            Step {step} of 3 <br />
+            <ul className="steps">
+              <li className={`step ${step >= 1 ? "step-primary" : ""}`}>Personal Details</li>
+              <li className={`step ${step >= 2 ? "step-primary" : ""}`}>College Details</li>
+              <li className={`step ${step >= 3 ? "step-primary" : ""}`}>end</li>
+            </ul>
           </div>
-
-
 
           <form onSubmit={handleSubmit} className="mt-8">
             {renderStepContent()}
-        
           </form>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default Signup;

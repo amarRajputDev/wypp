@@ -9,7 +9,13 @@ export interface user {
     courseDuration: number,
     yearOfStudy: number,
     personality: string,
-    interests: string[],
+    intrests: string[],
     email: string,
-    profilePic: string,
+    profilePic: string ,
+    Bio:string,
+    friends:string[],
+    bestFriend:string,
+    specialOne:string,
+    _id:string
+    
 }

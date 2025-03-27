@@ -2,55 +2,65 @@
 // import { Link } from "react-router-dom";
 import homeIcon from "../assets/Home.png";
 import chatIcon from "../assets/Earth Globe.png";
+import setting from "../assets/Settings.png";
 import thoughtIcon from "../assets/Thinking Male.png";
 import sthoughtIcon from "../assets/Spy.png";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "motion/react";
+// import MobileNav from "./MobileNav";
 
 
 const Sidebar = () => {
-    
-    const location = useLocation()
+  const location = useLocation();
+
   return (
-   <>
+    <>
+      {/* laptop */}
 
+      <div className=" h-[90vh]  w-[30%] hidden relative bg-[#F7F5EB]  p-5 lg:flex flex-col gap-16  ">
+      
 
+        {/* MENU  */}
+        <div className=" ">
+          <ul className=" flex flex-col gap-4  ">
+            <li className= {`rounded-full px-3 py-1 hover:bg-[#EDE9D5] hover:border-[#D4CBB8] duration-300 ${location.pathname == "/home" ? "bg-[#EDE9D5] border-[#D4CBB8]" : "" }`}>
+              <Link to={"/home"} className="flex items-center gap-3 font-semibold roboto-regular">
+                <img src={homeIcon} alt="" className=" h-10 " />
+                Home
+              </Link>
+            </li>
+            <li className= {`rounded-full px-2 w-full  py-1 hover:bg-[#EDE9D5] hover:border-[#D4CBB8] duration-300 ${location.pathname == "/home/announcement" ? "bg-[#EDE9D5] border-[#D4CBB8]" : "" }`}>
+              <Link to={"/home/announcement"} className="flex items-center gap-3 font-semibold roboto-regular">
+                <img src={thoughtIcon} alt="" className=" h-10 " />
+                Announcement
+              </Link>
+            </li>
+            <li className= {`rounded-full px-3 py-1 hover:bg-[#EDE9D5] hover:border-[#D4CBB8] duration-300 ${location.pathname == "/home/wypespace" ? "bg-[#EDE9D5] border-[#D4CBB8]" : "" }`}>
+              <Link to={"/home/wypespace"} className="flex items-center gap-3 font-semibold roboto-regular">
+                <img src={chatIcon} alt="" className=" h-10 " />
+                Wypp Space
+              </Link>
+            </li>
+            <li className= {`rounded-full px-3 py-1 hover:bg-[#EDE9D5] hover:border-[#D4CBB8] duration-300  ${location.pathname == "/home/secretthoughts" ? "bg-[#EDE9D5] border-[#D4CBB8]" : "" }`}>
+              <Link to={"/home/secretthoughts"} className="flex items-center gap-3 font-semibold roboto-regular">
+                <img src={sthoughtIcon} alt="" className=" h-10 " />
+                Secret Thoughts
+              </Link>
+            </li>
+          </ul>
+        </div>
 
+        {/* SETTING  */}
+        <div className=" absolute bottom-5 ">
+          <Link to={"/home"}> 
+          <img src={setting} alt="" className=" h-10" />
+           </Link>
+        </div>
+      </div>
 
-   {/* //Mobile */}
+    
 
-  
-    <span className="  w-14 h-14 left-28  rounded-full fixed bg-primary mb-14 "></span>
-   <ul className="menu menu-horizontal px-5  gap-5 shadow-2xl bg-base-200 rounded-box ">
-  <li className={`rounded-full `}>
-    <Link to={"/home"}>
-      <motion.img animate={{scale : location.pathname == "/home" ? 1.5 : 1}} src={homeIcon} className=" w-8" alt="" />
-    </Link>
-  </li>
-  <li className={`rounded-full ${location.pathname == "/home/wypespace" ? "bg-accent" : ""}`}>
-    <Link to={"/home/wypespace"}>
-    <img src={chatIcon} className=" w-7" alt="" />
-    </Link>
-  </li>
-  <li className={`rounded-full ${location.pathname == "/home/announcement" ? "bg-accent" : ""}`}>
-    <Link to={"/home/announcement"}>
-    <img src={thoughtIcon} className=" w-7" alt="" />
-    </Link>
-  </li>
-
-  <li className={`rounded-full ${location.pathname == "/home/secretthoughts" ? "bg-accent" : ""}`}>
-    <Link to={"/home/secretthoughts"}>
-    <img src={sthoughtIcon} className=" w-7" alt="" />
-
-    </Link>
-  </li>
-</ul>
-
- 
-
-   </>
+    </>
   );
 };
 
 export default Sidebar;
-

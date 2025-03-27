@@ -6,6 +6,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  Bio:{
+    type:String
+  },
+  friends:[
+    { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+  ],
+  bestFriend: {
+    type: String
+  },
+  specialOne: {
+    type: String
+  },
+
   email: {
     type: String,
     required: true,
@@ -37,7 +50,7 @@ const userSchema = new mongoose.Schema({
   },
   Course: {
     duration: {
-      type: String,
+      type: Number,
       required: true,
     },
     currentYear: {
@@ -56,7 +69,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  thoughts: [{ type: mongoose.Schema.Types.ObjectId, ref: "thoughts" }], // Array of tweet IDs
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }], // Array of tweet IDs
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
 },{timestamps:true});
 
